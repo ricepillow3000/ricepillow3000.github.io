@@ -1255,6 +1255,8 @@ test('SIDE QUESTS plays THE SQUARE: a painted square with nine screens, the big 
 test('the departure board and the station lights never show off the title (they used to hang faded over the city on THE PLAN)', async ({ page }) => {
   await page.goto('/#/board');
   await expect(page.locator('body')).toHaveAttribute('data-screen', 'board');
+  // (a deep link loads the station after THE PLAN has built in, so wait for its layer to exist)
+  await expect(page.locator('.st-wrap')).toHaveCount(1, { timeout: 10000 });
   await page.waitForTimeout(1200);
   expect(await page.evaluate(() => getComputedStyle(document.querySelector('.st-wrap')).opacity)).toBe('0');
 });

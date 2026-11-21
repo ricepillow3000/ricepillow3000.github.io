@@ -10,6 +10,7 @@
 
 import { mountSubway, hurrySubway, subwayReady } from './subway.js';
 import { artSrc } from './art.js';
+import { fontsReady } from '../core/util.js';
 
 const C = { black: '#050505', red: '#D80000', red2: '#E60012', white: '#FFFFFF', blood: '#7A0008' };
 const VB = '0 0 1600 900';
@@ -204,6 +205,12 @@ function billboardLayer() {
     </filter>
     <linearGradient id="bbSheen" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     ${RINGS_USED.map(([n, d]) => `<clipPath id="bbRing-${n}"><path d="${d}"/></clipPath>`).join('')}
+    <!-- the moving letters are a MASK over the screen's lit face, never painted as text themselves
+         (Nov 21, the speed pass: painted as text inside the glow filter, every letter counted as
+         big as the filter's whole region, so each one crawling in set a later "largest paint" and
+         a deep link to THE PLAN scored LCP ~7 s while the board was on screen at ~1.3 s; the
+         pixels are exactly the same) -->
+    ${RINGS_USED.map(([n]) => `<mask id="bbType-${n}" maskUnits="userSpaceOnUse" x="560" y="120" width="500" height="460"><g class="bb-ring bb-${n}" data-ring="${n}">${letters(n)}</g></mask>`).join('')}
     ${BB_RINGS.map(([n, d]) => `<clipPath id="bbFace-${n}"><path d="${d}"/></clipPath>`).join('')}
     <pattern id="bbGrid" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><path d="M.3 0V2.6" stroke="#4A000C" stroke-width=".6" opacity=".55"/><path d="M0 .3H2.6" stroke="#4A000C" stroke-width=".4" opacity=".25"/></pattern>
     ${BB_RINGS.map(([n]) => { const g = BB_GEO[n]; return `<linearGradient id="bbCurve-${n}" gradientUnits="userSpaceOnUse" x1="${g.cx - g.R}" x2="${g.cx + g.R}" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset=".2" stop-color="#000" stop-opacity=".14"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity=".14"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>`; }).join('')}
@@ -212,7 +219,7 @@ function billboardLayer() {
        "make it all a solid color, following the texture pattern"): the base red (matched to the art
        shown at 72%), the fine LED grid, and a little shade toward the edges so it still reads as a drum -->
   ${BB_RINGS.map(([n, d]) => `<path d="${d}" fill="#A3112A"/><path d="${d}" fill="url(#bbGrid)"/><path d="${d}" fill="url(#bbCurve-${n})"/>`).join('')}
-  ${RINGS_USED.map(([n]) => `<g clip-path="url(#bbRing-${n})"><g class="bb-flicker" filter="url(#bbGlow)"><g mask="url(#bbDots)"><g class="bb-ring bb-${n}" data-ring="${n}">${letters(n)}</g></g></g></g>`).join('')}
+  ${RINGS_USED.map(([n, d]) => `<g clip-path="url(#bbRing-${n})"><g class="bb-flicker" filter="url(#bbGlow)"><g mask="url(#bbDots)"><path d="${d}" fill="#fff" mask="url(#bbType-${n})"/></g></g></g>`).join('')}
   <!-- a faint light sweep gliding across each screen's glass, out of step, now and then -->
   ${BB_RINGS.map(([n], i) => { const g = BB_GEO[n]; return `<g clip-path="url(#bbFace-${n})"><rect class="bb-sheen" style="--sd:${(i * 2.3).toFixed(1)}s" x="${g.cx - g.R - 60}" y="${g.t0 - g.ta - 10}" width="60" height="${g.b0 - g.t0 + g.ta + 30}" fill="url(#bbSheen)" transform="skewX(-12)"/></g>`; }).join('')}
 </svg>`;
@@ -298,9 +305,14 @@ function startTicker(svg) {
     });
   };
   const t0 = performance.now();
+  const art = svg.parentNode.querySelector('img');
   const frame = (now) => {
     requestAnimationFrame(frame);
     if (document.body.dataset.mode === 'title') return; // the city isn't shown on the title
+    /* nor before its art has arrived (the screens stay at opacity 0 until then): moving the letters
+       re-lays out the whole SVG every frame, ~10 ms on a slow phone, right while a deep link's first
+       screen builds in (Nov 21, the speed pass) */
+    if (!art.classList.contains('in')) return;
     const still = reduce();
     lightsStep(now, still);
     rings.forEach((r) => {
@@ -406,7 +418,13 @@ export function mountBackdrop(el) {
   loadSceneNow = loadCity;
   loadStationNow = loadSubway;
   setTimeout(loadSubway, 2500);
-  const later = () => setTimeout(loadCity, 0);
+  /* A deep link (THE PLAN, a chapter, Quick View) lands on a screen that builds in with the brand
+     fonts; the art waits until that entrance has landed (fonts in, then ~0.9 s, the length of THE
+     PLAN's cascade), so ~760 KB of pictures never compete with the fonts and code the first screen
+     needs (Nov 21, the speed pass: started at the load event, they finished before the board's big
+     number painted, and a phone on slow 4G scored LCP ~6 s on /#/board while / scored 0.9 s). The
+     city still fades in when it arrives; START or a film cut loads it at once (loadSceneNow). */
+  const later = () => (away() ? fontsReady().then(() => setTimeout(loadCity, 900)) : setTimeout(loadCity, 0));
   if (document.readyState === 'complete') later();
   else window.addEventListener('load', later, { once: true });
 

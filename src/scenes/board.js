@@ -172,14 +172,17 @@ export function createBoard(root, ctx) {
     // slammed together like a command screen: the chapter lines punch in from the left one after
     // another, the blade slices out behind the picked one, the number spins onto the starburst,
     // and the picked chapter's name lands last, big, where the eye ends up
-    // the picked chapter and its big word land first (that's where the eye should go), then the
-    // rest of the stack, the number, the preview stickers and the header fill in around them
+    // the picked chapter, its number and its big word land first (that's where the eye should go), then
+    // the rest of the stack, the preview stickers and the header fill in around them
     tl.from(root.querySelector('.pl-item.on'), { x: -260, rotation: -14, opacity: 0, duration: 0.28, ease: 'back.out(1.8)', clearProps: 'transform,opacity' }, 0)
       .from(root.querySelector('.pl-item.on .pl-blade'), { scaleX: 0, duration: 0.22, ease: 'power4.out', clearProps: 'transform' }, 0.12)
       .from(cont, { y: 90, rotation: 5, opacity: 0, duration: 0.3, ease: 'back.out(1.8)', clearProps: 'transform,opacity' }, 0.08)
       .from(title.querySelectorAll('.rl'), { y: -60, rotation: () => gsap.utils.random(-40, 40), opacity: 0, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.025 }, 0.12)
       .from(root.querySelectorAll('.pl-item:not(.on)'), { x: -220, rotation: -12, opacity: 0, duration: 0.26, ease: 'back.out(1.8)', stagger: 0.045, clearProps: 'transform,opacity' }, 0.22)
-      .from(root.querySelector('.cmd-right'), { scale: 2.2, rotation: 25, opacity: 0, duration: 0.3, ease: 'back.out(1.7)', clearProps: 'transform,opacity' }, 0.3)
+      // the picked chapter's number spins onto the starburst WITH its chapter, on the first beat (Nov 21,
+      // the speed pass: at 0.3 s, its first frame at 2.2x was the screen's "largest paint" and landed after
+      // the fonts, so a phone's load score charged it their whole download: LCP ~3.7 s on /#/board)
+      .from(root.querySelector('.cmd-right'), { scale: 2.2, rotation: 25, opacity: 0, duration: 0.3, ease: 'back.out(1.7)', clearProps: 'transform,opacity' }, 0)
       .from(loot.children, { x: -60, scale: 1.5, rotation: () => gsap.utils.random(-18, 18), opacity: 0, duration: 0.24, ease: 'back.out(2.4)', stagger: 0.06, clearProps: 'transform,opacity' }, 0.4)
       .from(root.querySelector('.plan-head'), { y: -40, opacity: 0, duration: 0.26, ease: 'power3.out', clearProps: 'transform,opacity' }, 0.34)
       .from(root.querySelectorAll('.pp'), { scale: 1.8, rotation: () => gsap.utils.random(-20, 20), opacity: 0, duration: 0.24, ease: 'back.out(2.6)', stagger: 0.06, clearProps: 'transform,opacity' }, 0.46)
