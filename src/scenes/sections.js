@@ -74,8 +74,8 @@ export function dossierMarkup(m) {
       <ul class="dossier-stack">${m.stack.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
     </header>
     <div class="dossier-links">
-      <a class="btn" href="${esc(m.live)}" target="_blank" rel="noopener" data-track="live_${m.id}" data-clear="${m.id}">Try it live ${EXT}</a>
-      <a class="btn" href="${esc(m.repo)}" target="_blank" rel="noopener" data-track="repo_${m.id}" data-clear="${m.id}">Code on GitHub ${EXT}</a>
+      <a class="btn" href="${esc(m.live)}" target="_blank" rel="noopener noreferrer" data-track="live_${m.id}" data-clear="${m.id}">Try it live ${EXT}</a>
+      <a class="btn" href="${esc(m.repo)}" target="_blank" rel="noopener noreferrer" data-track="repo_${m.id}" data-clear="${m.id}">Code on GitHub ${EXT}</a>
     </div>
     <p class="dossier-hint">${isCleared(m.id) ? 'Case cleared. Thanks for checking it out.' : 'Visit the live app or the code to clear this case.'}</p>
     ${m.story ? `<section class="story" aria-label="The story"><h3>THE STORY</h3>${storyList(m.story)}</section>` : ''}
@@ -341,9 +341,9 @@ function contact() {
         </div>
       </div></div>
       <div class="contact-btns" data-in>
-        <a class="btn btn-primary" data-nav data-magnetic href="${esc(L.linkedin)}" target="_blank" rel="noopener" data-track="linkedin_click">in · Connect on LinkedIn ${EXT}</a>
+        <a class="btn btn-primary" data-nav data-magnetic href="${esc(L.linkedin)}" target="_blank" rel="noopener noreferrer" data-track="linkedin_click">in · Connect on LinkedIn ${EXT}</a>
         <a class="btn" data-nav href="mailto:${esc(L.email)}" data-track="email_click">${esc(L.email)}</a>
-        <a class="btn" data-nav href="${esc(L.github)}" target="_blank" rel="noopener" data-track="github_click">GitHub ${EXT}</a>
+        <a class="btn" data-nav href="${esc(L.github)}" target="_blank" rel="noopener noreferrer" data-track="github_click">GitHub ${EXT}</a>
         <a class="btn btn-accent" data-nav href="${esc(L.pdf)}" download data-track="pdf_click">↓ PDF resume</a>
       </div>`,
     after(root) {
@@ -393,9 +393,10 @@ function system() {
         <section class="sys jag light sys-credits" data-in style="grid-column:1/-1">
           <h3>SOUND CREDITS</h3>
           <p>Most sounds are synthesized live. These are real recordings, free under Creative Commons:</p>
-          <ul>${SOUND_CREDITS.map((c) => `<li><b>${esc(c.what)}</b> · <a href="${esc(c.source)}" target="_blank" rel="noopener">${esc(c.pack)}</a> by ${c.authorUrl ? `<a href="${esc(c.authorUrl)}" target="_blank" rel="noopener">${esc(c.author)}</a>` : esc(c.author)} · <a href="${esc(c.licenseUrl)}" target="_blank" rel="noopener">${esc(c.license)}</a>${c.changes ? ` · ${esc(c.changes)}` : ''}</li>`).join('')}</ul>
+          <ul>${SOUND_CREDITS.map((c) => `<li><b>${esc(c.what)}</b> · <a href="${esc(c.source)}" target="_blank" rel="noopener noreferrer">${esc(c.pack)}</a> by ${c.authorUrl ? `<a href="${esc(c.authorUrl)}" target="_blank" rel="noopener noreferrer">${esc(c.author)}</a>` : esc(c.author)} · <a href="${esc(c.licenseUrl)}" target="_blank" rel="noopener noreferrer">${esc(c.license)}</a>${c.changes ? ` · ${esc(c.changes)}` : ''}</li>`).join('')}</ul>
         </section>
-      </div>`,
+      </div>
+      <p class="legal">Independent, non-commercial personal portfolio inspired by Persona 5. Persona 5 and related marks are trademarks of ATLUS / SEGA. No affiliation implied. © 2026 John Nguyen. <a href="/privacy.html">Privacy and terms</a></p>`,
     after(root) {
       // the slider's red runs as far as its knob (the track is drawn by the page, not the browser)
       const vol = root.querySelector('#musicVol');

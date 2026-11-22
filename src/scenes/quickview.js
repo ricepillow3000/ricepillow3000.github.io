@@ -15,8 +15,8 @@ export function renderQuickView(el) {
       <div class="q-contact">
         <span>${esc(r.location)}</span>
         <a href="mailto:${esc(L.email)}" data-track="email_click">${esc(L.email)}</a>
-        <a href="${esc(L.linkedin)}" target="_blank" rel="noopener" data-track="linkedin_click">LinkedIn</a>
-        <a href="${esc(L.github)}" target="_blank" rel="noopener" data-track="github_click">GitHub</a>
+        <a href="${esc(L.linkedin)}" target="_blank" rel="noopener noreferrer" data-track="linkedin_click">LinkedIn</a>
+        <a href="${esc(L.github)}" target="_blank" rel="noopener noreferrer" data-track="github_click">GitHub</a>
       </div>
     </header>
     <div class="paper-body">
@@ -45,8 +45,8 @@ export function renderQuickView(el) {
           <h2>PROJECTS</h2>
           ${r.missions
             .map(
-              (m) => `<h3><a href="${esc(m.live)}" target="_blank" rel="noopener">${esc(m.resumeTitle)}</a></h3>
-              <p class="meta">${esc(m.stack.join(', '))} · ${esc(m.dates)} · <a href="${esc(m.repo)}" target="_blank" rel="noopener">code</a></p>
+              (m) => `<h3><a href="${esc(m.live)}" target="_blank" rel="noopener noreferrer">${esc(m.resumeTitle)}</a></h3>
+              <p class="meta">${esc(m.stack.join(', '))} · ${esc(m.dates)} · <a href="${esc(m.repo)}" target="_blank" rel="noopener noreferrer">code</a></p>
               <ul>${m.resume.map((o) => `<li>${esc(o)}</li>`).join('')}</ul>`
             )
             .join('')}
@@ -59,6 +59,7 @@ export function renderQuickView(el) {
             .join('')}
         </section>
       </div>
+      <p class="legal">Independent, non-commercial personal portfolio inspired by Persona 5. Persona 5 and related marks are trademarks of ATLUS / SEGA. No affiliation implied. © 2026 John Nguyen. <a href="/privacy.html">Privacy and terms</a></p>
     </div>`;
   ransom(el.querySelector('#qName'), r.name.toUpperCase(), 3);
 }

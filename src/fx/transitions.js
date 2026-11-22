@@ -21,11 +21,29 @@ export function skipCurrent() {
 
 export const isAnimating = () => Boolean(current && current.isActive());
 
+/* a visible SKIP cue while a film shot runs (Nov 22, launch prep: the shots were always skippable by a tap, Enter, Space or Esc,
+   but nothing said so). Only for shots of a second or more; it leaves the moment the shot ends. */
+let skipChip = null;
+function showSkip(tl) {
+  if (tl.duration() < 1 || tl.progress() === 1) return;
+  skipChip?.remove();
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'skip-chip'; b.innerHTML = 'SKIP <span aria-hidden="true">▸</span>';
+  b.setAttribute('aria-label', 'Skip the animation');
+  b.addEventListener('click', (e) => { e.stopPropagation(); skipCurrent(); });
+  document.body.appendChild(b); skipChip = b;
+  const done = () => { if (skipChip === b) skipChip = null; b.remove(); };
+  tl.eventCallback('onInterrupt', done);
+  return done;
+}
+
 export function track(tl) {
   current = tl;
+  const hideSkip = showSkip(tl);
   return new Promise((resolve) => {
     const own = tl.eventCallback('onComplete');
     tl.eventCallback('onComplete', () => {
+      hideSkip?.();
       own?.();
       resolve();
     });

@@ -999,6 +999,14 @@ window.addEventListener('keydown', (e) => {
 });
 bindGamepad(handle, () => unlock('player-2'));
 
+/* copy the email on any email link (Nov 22, launch prep): a visitor with no mail app set up still gets the address */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest?.('a[href^="mailto:"]');
+  if (!a) return;
+  const addr = a.getAttribute('href').slice(7).split('?')[0];
+  navigator.clipboard?.writeText(addr).then(() => toast(addr, 'EMAIL COPIED!'), () => {});
+});
+
 /* ---------------------------------------------------------------- analytics (cookie-free, optional) */
 function track(name) {
   try {
