@@ -188,13 +188,17 @@ body.reduce-motion .mn-burst { animation: none; }
   filter: drop-shadow(.05em 0 0 var(--black)) drop-shadow(-.05em 0 0 var(--black)) drop-shadow(0 .05em 0 var(--black)) drop-shadow(0 -.05em 0 var(--black)) drop-shadow(.06em .07em 0 var(--black));
 }
 .stair-item .si-text .ct.box, .mn-big .ct.box { background: var(--black); color: var(--white); box-shadow: none; }
+.mn-big { display: inline-grid; } .mn-big > span { grid-area: 1 / 1; }
+.mn-big .mn-under .ct, .mn-big .mn-under .ct.box { color: transparent; }
+.mn-big .mn-over .ct.box { background: none; }
 /* the picked word: every letter on its own paper tile, the first one red, a small teal flag after it */
 .stair-item.on { --sc: 1.14; transform: rotate(-9deg) scale(var(--sc)); }
 .stair-item.on .si-text { animation: jolt .22s ease-out; }
 .stair-item.on .si-text .ct { padding: 0 .07em; margin-right: .03em; background: var(--white); color: var(--black); box-shadow: .05em .05em 0 var(--black); }
 .stair-item.on .si-text .ct:first-child { background: var(--red); color: var(--white); }
-.stair-item.on::after { content: ""; flex: none; width: .5em; height: .42em; margin-left: -6px; background: var(--teal); clip-path: polygon(0 0, 100% 30%, 20% 100%); filter: drop-shadow(2px 2px 0 var(--black)); }
+.stair-item.on::after { content: ""; flex: none; width: .5em; height: .42em; margin-left: -6px; background: var(--yellow); clip-path: polygon(0 0, 100% 30%, 20% 100%); filter: drop-shadow(2px 0 0 var(--black)) drop-shadow(-2px 0 0 var(--black)) drop-shadow(0 2px 0 var(--black)) drop-shadow(0 -2px 0 var(--black)) drop-shadow(3px 3px 0 var(--black)); } /* the star's yellow with a full ink edge (the teal flag was off the palette) */
 .stair.has-on .stair-item:not(.on) { --sc: .92; }
+.stair-item:focus-visible { outline: none; } /* focus picks the item, and the picked item's paper tiles, star and flag ARE the focus mark (a thin yellow box round it read as a stray web outline) */
 @keyframes jolt { 0% { transform: translateX(-12px) scale(1.08); } 60% { transform: translateX(4px); } 100% { transform: none; } }
 .cursor-star { width: .42em; height: .42em; flex: none; opacity: 0; position: relative; z-index: 2; background: var(--yellow);
   clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
@@ -207,10 +211,10 @@ body.reduce-motion .mn-burst { animation: none; }
 .mn-tag span { margin-top: 8px; padding: 3px 12px; font: 400 clamp(14px, 1.3vw, 19px)/1 var(--f-menu); letter-spacing: 3px; text-transform: uppercase; background: var(--black); color: var(--white); border: 2px solid var(--white); }
 .mn-num { position: absolute; z-index: 2; top: calc(9vh + 150px); right: 9vw; display: flex; gap: .04em; rotate: -8deg; font-family: var(--f-head); font-size: clamp(80px, min(13vw, 21vh), 220px); line-height: .92; }
 .mn-d { display: inline-block; padding: 0 .08em; border: .03em solid var(--black); box-shadow: .05em .05em 0 var(--black); }
-.mn-d0 { background: var(--white); color: var(--black); rotate: -5deg; }
+.mn-d0 { background: var(--white); color: var(--black); rotate: -5deg; box-shadow: .05em .05em 0 var(--red); } /* both digits throw the same red print */
 .mn-d1 { background: var(--black); color: var(--white); border-color: var(--white); rotate: 6deg; translate: 0 .08em; box-shadow: .05em .05em 0 var(--red); }
 .mn-big { position: absolute; z-index: 2; left: 47vw; bottom: 11vh; font-size: clamp(54px, min(8vw, 15vh), 140px); line-height: 1; white-space: nowrap; rotate: -4deg; transform-origin: left bottom; pointer-events: none; }
-.menu-teaser { position: absolute; z-index: 2; left: 48vw; bottom: 4vh; max-width: min(560px, 48vw); padding: 6px 14px; background: var(--black); color: var(--white); font-family: var(--f-type); font-size: 18px; rotate: -2deg; box-shadow: 4px 4px 0 var(--white); }
+.menu-teaser { position: absolute; z-index: 2; left: 48vw; bottom: 4vh; max-width: min(560px, 48vw); padding: 8px 18px 7px; background: var(--black); color: var(--white); font: 700 italic 21px/1.15 var(--f-ui); letter-spacing: .6px; rotate: -2deg; box-shadow: 5px 5px 0 var(--red); } /* the site's label face on a roomy slab with a red print (thin typewriter text in a thin box read as cramped) */
 .mn-count { position: absolute; z-index: 2; left: var(--gutter); bottom: 5vh; display: flex; align-items: baseline; gap: 6px; rotate: -6deg; font-family: var(--f-head); color: var(--white); -webkit-text-stroke: 5px var(--black); paint-order: stroke fill; }
 .mn-count span { align-self: center; padding: 2px 8px; font: 400 20px var(--f-menu); letter-spacing: 3px; background: var(--black); color: var(--white); -webkit-text-stroke: 0; }
 .mn-count b { font-size: clamp(40px, 5vw, 72px); font-weight: 400; }
@@ -634,12 +638,22 @@ body[data-mode="title"] .scroll-meter { display: none; }
 .ns-lights i { position: absolute; left: 0; height: 6px; background: #FFF6D8; box-shadow: 0 0 14px 3px rgba(255, 240, 200, .55); }
 .ns-lights i:nth-child(3n) { background: var(--red); box-shadow: 0 0 14px 3px rgba(229, 25, 28, .55); height: 4px; }
 .ns-station { position: absolute; inset: 0; background: #2A2B2F; }
-.ns-tiles { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0, 0, 0, .55) 1px, transparent 1px) 0 0 / 48px 48px, linear-gradient(rgba(0, 0, 0, .55) 1px, transparent 1px) 0 0 / 48px 48px, #9C9C98; }
-.ns-stripe { position: absolute; left: 0; right: 0; top: 63%; height: 5%; background: var(--red); border-block: 3px solid #0B0B0B; }
-.ns-pillar { position: absolute; top: 0; bottom: 0; left: 12%; width: 9vw; background: #5A5B60; border-inline: 4px solid #0B0B0B; }
+/* the station wall outside (Nov 22, three judges: "a flat grey grid"): brick-bond tiles with a few off-tone ones, lit from the platform's
+   ceiling tubes (warm at the top, falling off down the wall), a hard cel shadow thrown across it, a dark skirting course under the red line */
+.ns-tiles { position: absolute; inset: 0; background:
+  linear-gradient(104deg, transparent 0 61%, rgba(11, 11, 14, .3) 61% 100%),
+  linear-gradient(180deg, rgba(11, 11, 14, .5) 0 24%, rgba(255, 236, 190, .16) 24% 31%, transparent 46%, rgba(11, 11, 14, .16) 58%, rgba(11, 11, 14, .62) 61.4% 100%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='96'%3E%3Crect width='192' height='96' fill='%23B4AE9C'/%3E%3Crect x='48' y='0' width='48' height='24' fill='%23A9A391'/%3E%3Crect x='120' y='24' width='48' height='24' fill='%23BDB7A6'/%3E%3Crect x='0' y='48' width='48' height='24' fill='%23ABA594'/%3E%3Crect x='72' y='72' width='48' height='24' fill='%23A39D8B'/%3E%3Crect x='144' y='48' width='48' height='24' fill='%23BAB4A2'/%3E%3Cpath d='M0 .75H192M0 24.75H192M0 48.75H192M0 72.75H192M.75 0V24M48.75 0V24M96.75 0V24M144.75 0V24M24.75 24V48M72.75 24V48M120.75 24V48M168.75 24V48M.75 48V72M48.75 48V72M96.75 48V72M144.75 48V72M24.75 72V96M72.75 72V96M120.75 72V96M168.75 72V96' stroke='%23545046' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") 0 0 / 192px 96px; }
+.ns-stripe { position: absolute; left: 0; right: 0; top: 60.2%; height: 1.3%; background: var(--red); border-block: 2px solid #0B0B0B; }
+.ns-pillar { position: absolute; top: 0; bottom: 0; left: 12%; width: 9vw; background: linear-gradient(90deg, #77756C 0 62%, #3D3D40 62% 100%); border-inline: 4px solid #0B0B0B;
+  box-shadow: 5.5vw 0 0 rgba(11, 11, 14, .34); } /* (a lit face, a dark side, and its hard shadow on the wall behind) */
 .ns-pillar.p2 { left: auto; right: 10%; }
+/* the station's name board: bolted to the wall on two steel standoffs, a hard shadow on the tiles under it */
 .ns-sign { position: absolute; left: 50%; top: 40%; translate: -50% -50%; display: grid; justify-items: center; padding: 10px 34px 10px; background: var(--black);
-  border: 5px solid var(--white); box-shadow: 10px 10px 0 var(--red); }
+  border: 5px solid var(--white); box-shadow: 5px 5px 0 var(--red), 5px 5px 0 2px #0B0B0B, 16px 20px 0 rgba(11, 11, 14, .42); }
+.ns-sign::before { content: ""; position: absolute; left: 9%; right: 9%; top: -27px; height: 22px; pointer-events: none;
+  background: linear-gradient(90deg, #0B0B0B 0 3px, #8D8C86 3px 9px, #4A4A4C 9px 13px, #0B0B0B 13px 16px, transparent 16px calc(100% - 16px), #0B0B0B calc(100% - 16px) calc(100% - 13px), #8D8C86 calc(100% - 13px) calc(100% - 7px), #4A4A4C calc(100% - 7px) calc(100% - 3px), #0B0B0B calc(100% - 3px));
+  border-top: 5px solid #0B0B0B; }
 /* the pane's glass lies over the sign too: one hard glint across it and a faint shade, so it sits BEHIND the window */
 .ns-sign::after { content: ""; position: absolute; inset: -5px; pointer-events: none;
   background: linear-gradient(112deg, transparent 0 20%, rgba(245, 245, 240, .22) 20% 30%, transparent 30% 35%, rgba(245, 245, 240, .11) 35% 39%, transparent 39%), rgba(11, 11, 11, .12); }
@@ -651,13 +665,26 @@ body[data-mode="title"] .scroll-meter { display: none; }
   background: repeating-linear-gradient(112deg, transparent 0 13vw, rgba(245, 245, 240, .13) 13vw 15.4vw, transparent 15.4vw 16.6vw, rgba(245, 245, 240, .07) 16.6vw 17.5vw, transparent 17.5vw 29vw); }
 .ns-car { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 49% 46%; }
 .cardshot { display: grid; place-items: center; }
-.cs-dim { position: absolute; inset: 0; background: rgba(5, 5, 5, .72); }
+.cs-dim { position: absolute; inset: 0; background: rgba(5, 5, 5, .86); }
+/* the throw's wake: three hard tapering streaks along the card's path (they are gone by the time it is read) */
+.cs-streaks { position: absolute; inset: 0; pointer-events: none; }
+.cs-streaks i { position: absolute; right: -6vw; top: 14vh; width: 78vw; height: 1.5vh; background: var(--white); transform-origin: 100% 50%; rotate: -28deg; clip-path: polygon(0 50%, 100% 0, 100% 100%); }
+.cs-streaks i:nth-child(2) { top: 5vh; right: 8vw; width: 60vw; height: .9vh; rotate: -31deg; background: var(--red); }
+.cs-streaks i:nth-child(3) { top: 30vh; right: -10vw; width: 66vw; height: .7vh; rotate: -24deg; }
+/* the card: cream stock with a printed frame, a red corner and a pressed wax seal; it stands off the menu on a hard red edge and throws a hard shadow */
 .cs-card { position: relative; width: min(78vw, 560px); aspect-ratio: 1.6; display: grid; align-content: center; justify-items: center; gap: 6px;
-  background: #F7F1E1; color: var(--black); border: 5px solid var(--black); box-shadow: 14px 14px 0 var(--red); will-change: transform; }
-.cs-card small { font-family: var(--f-menu); font-size: clamp(16px, 2.6vw, 22px); letter-spacing: 3px; }
-.cs-card b { font-family: var(--f-mark); font-weight: 400; font-size: clamp(42px, 9vw, 84px); line-height: 1; color: var(--red); transform: rotate(-4deg); }
-.cs-card em { font-family: var(--f-mark); font-style: normal; font-size: clamp(16px, 2.6vw, 22px); }
-.cs-seal { position: absolute; right: 7%; bottom: 10%; width: 54px; height: 54px; border-radius: 50%; background: var(--red); box-shadow: inset 0 0 0 6px #B30F12; }
+  background: linear-gradient(135deg, var(--red) 0 7.4%, var(--black) 7.4% 8%, transparent 8.1%), #F7F1E1; color: var(--black); border: 5px solid var(--black);
+  box-shadow: 14px 14px 0 var(--red), 14px 14px 0 3px var(--black), 38px 44px 0 rgba(0, 0, 0, .62); will-change: transform; }
+.cs-card::before { content: ""; position: absolute; inset: 3.2%; border: 2px solid var(--black); outline: 1px solid var(--black); outline-offset: 3px; pointer-events: none;
+  clip-path: polygon(13% -4%, 104% -4%, 104% 62%, 80% 62%, 80% 104%, -4% 104%, -4% 22%, 13% 22%); } /* (the frame breaks for the red corner and the seal) */
+.cs-card::after { content: ""; position: absolute; left: 0; bottom: 0; width: 34%; height: 46%; pointer-events: none; background: radial-gradient(rgba(214, 21, 25, .5) 1.5px, transparent 2px) 0 0 / 8px 8px;
+  -webkit-mask-image: linear-gradient(40deg, #000 6%, transparent 52%); mask-image: linear-gradient(40deg, #000 6%, transparent 52%); }
+.cs-card small { position: relative; z-index: 1; font-family: var(--f-menu); font-size: clamp(16px, 2.6vw, 22px); letter-spacing: 3px; padding: 3px 12px 1px; background: var(--black); color: #F7F1E1; rotate: -2deg; }
+.cs-card b { position: relative; z-index: 1; display: flex; flex-wrap: nowrap; justify-content: center; font-weight: 400; font-size: clamp(34px, 7.6vw, 72px); line-height: 1; margin: 8px 0 6px; white-space: nowrap; rotate: -3deg; }
+.cs-card b .rw:last-child { margin-right: 0; }
+.cs-card em { position: relative; z-index: 1; font-family: var(--f-mark); font-style: normal; font-size: clamp(16px, 2.6vw, 22px); rotate: -1.5deg; }
+.cs-seal { position: absolute; z-index: 1; right: 4.5%; bottom: 7%; width: 16%; aspect-ratio: 1; rotate: 9deg; }
+.cs-seal svg { display: block; width: 100%; height: 100%; overflow: visible; }
 
 /* film letterbox (every film cut) and cut-out signs */
 .fall .lb { position: absolute; left: 0; right: 0; height: 9vh; background: var(--black); z-index: 5; transform: scaleY(0); }
@@ -721,15 +748,16 @@ body[data-mode="title"] .scroll-meter { display: none; }
 .sq-scr em { font-style: normal; color: var(--yellow); }
 .sq-glow { --c: 229, 25, 28; position: absolute; left: 0; top: 0; transform-origin: 0 0; z-index: 4; pointer-events: none; mix-blend-mode: screen; opacity: .8;
   box-shadow: 0 0 18px 6px rgba(var(--c), .38), 0 0 46px 16px rgba(var(--c), .16); } /* (outside the screen only: light spilling onto the bezel and the wall) */
+.sq-name::after, .sq-checks::after, .sq-motto::after, .sq-proof::after, .sq-jn::after { background-size: 2px 2px; opacity: .8; }
 /* the ads */
 .sq-main { background: var(--red); gap: .1em; }
 .sq-main .sq-label { position: relative; z-index: 2; font-size: 1.55em; max-width: 96%; }
 .sq-main .sq-slash { position: absolute; left: -10%; right: -10%; top: 58%; height: 30%; background: var(--black); rotate: -8deg; z-index: 1;
   box-shadow: 0 -.15em 0 var(--white); }
-.sq-g-main { --c: 229, 25, 28; opacity: 1; }
+.sq-g-main { --c: 229, 25, 28; opacity: 1; box-shadow: 0 0 20px 8px rgba(var(--c), .46), 0 0 60px 26px rgba(var(--c), .22), 0 0 130px 60px rgba(var(--c), .1); }
 .sq-time { background: var(--red); gap: .15em; } .sq-time b { font-size: 1.5em; color: var(--white); } .sq-time .sq-big { font-size: 2.3em; color: var(--black); background: var(--white); padding: 0 .12em; text-shadow: none; }
 .sq-g-time { --c: 229, 25, 28; }
-.sq-name { background: var(--black); } .sq-name .sq-john { font: 400 2.6em/1 var(--f-head); color: var(--white); background: var(--red); padding: 0 .15em; rotate: -4deg; text-shadow: none; } .sq-name .sq-ng { font-size: 1.75em; letter-spacing: .16em; margin-top: .12em; }
+.sq-name { background: var(--black); } .sq-name .sq-john { font: 400 2.6em/1 var(--f-head); color: var(--white); background: var(--red); padding: 0 .15em; rotate: -4deg; text-shadow: none; } .sq-name .sq-ng { font: 400 1.7em/1 var(--f-head); letter-spacing: .12em; margin-top: .14em; }
 .sq-g-name { --c: 229, 25, 28; opacity: .6; }
 .sq-time b { font-size: 2em !important; } .sq-time .sq-big { letter-spacing: .02em; }
 .sq-name .sq-wanted { font-size: 1.55em; letter-spacing: .25em; color: var(--yellow); margin-bottom: .1em; }
@@ -748,15 +776,16 @@ body[data-mode="title"] .scroll-meter { display: none; }
 .sq-time .sq-look { animation: sq-blink .7s steps(2) infinite; }
 .sq-time .sq-big { animation: sq-zoom 1.1s cubic-bezier(.2, 1.4, .4, 1) infinite alternate; }
 @keyframes sq-zoom { from { scale: .9; } to { scale: 1.12; } }
-.sq-eye { position: absolute; left: 50%; top: 72%; width: 2.2em; height: 1.1em; translate: -50% 0; border: .18em solid var(--white); border-radius: 50%; }
-.sq-eye::after { content: ""; position: absolute; top: 50%; left: 50%; width: .5em; height: .5em; margin: -.25em; background: var(--white); border-radius: 50%; animation: sq-look 1.6s steps(4) infinite; }
+.sq-eye { position: absolute; left: 50%; top: 67%; width: 3.8em; height: 1.8em; translate: -50% 0; background: var(--white); clip-path: polygon(0 50%, 14% 24%, 32% 7%, 50% 0, 68% 7%, 86% 24%, 100% 50%, 86% 76%, 68% 93%, 50% 100%, 32% 93%, 14% 76%); }
+.sq-eye::after { content: ""; position: absolute; top: 50%; left: 50%; width: 1.1em; height: 1.1em; margin: -.55em; background: radial-gradient(circle, var(--black) 0 34%, var(--red) 36% 100%); border: .1em solid var(--black); border-radius: 50%; animation: sq-look 1.6s steps(4) infinite; }
 @keyframes sq-look { 0%, 100% { translate: -.45em 0; } 50% { translate: .45em 0; } }
 .sq-name .sq-wanted { animation: sq-blink .6s steps(2) infinite; }
 .sq-name .sq-john { animation: sq-jolt 1.2s steps(1) infinite; }
 @keyframes sq-jolt { 0%, 80% { rotate: -4deg; translate: 0 0; } 84% { rotate: 3deg; translate: .08em -.05em; } 90% { rotate: -6deg; translate: -.06em .04em; } }
-.sq-proof { place-content: center start; overflow: hidden; }
-.sq-tick { display: flex; width: max-content; animation: sq-tick 2.4s linear infinite; }
-.sq-tick b { white-space: nowrap; padding-right: .6em; }
+.sq-proof { place-content: center; overflow: hidden; }
+.sq-tick { display: grid; justify-items: center; gap: .12em; width: 100%; }
+.sq-tick b:first-child { animation: sq-jolt 1.2s steps(1) infinite; } .sq-tick b + b { animation: sq-blink .8s steps(2) infinite; }
+.sq-tick b { white-space: nowrap; }
 @keyframes sq-tick { to { translate: -50% 0; } }
 .sq-motto .sq-red { position: relative; animation: sq-glitch 1s steps(1) infinite; }
 @keyframes sq-glitch { 0%, 70%, 100% { translate: 0 0; text-shadow: none; } 72% { translate: .08em 0; text-shadow: -.08em 0 var(--yellow); } 76% { translate: -.1em 0; text-shadow: .08em 0 var(--black); } 80% { translate: 0 0; } }
@@ -776,10 +805,10 @@ body[data-mode="title"] .scroll-meter { display: none; }
 .sq-main { padding-top: 1.5em; }
 .sq-bar { position: absolute !important; left: 0; right: 0; top: 0; height: 1.25em; z-index: 3 !important; background: var(--black); overflow: hidden;
   border-bottom: .08em solid var(--yellow); display: flex; align-items: center; }
-.sq-bar-run { display: flex; width: max-content; animation: sq-bar 2.2s linear infinite; }
-.sq-bar-run span { font: 400 .78em/1 var(--f-menu); letter-spacing: .35em; color: var(--yellow); padding: 0 1.6em; white-space: nowrap; text-shadow: 0 0 .3em rgba(255, 225, 26, .7); }
-.sq-bar-run span::after { content: "★"; margin-left: 1.6em; color: var(--red); letter-spacing: 0; }
-@keyframes sq-bar { from { translate: -50% 0; } to { translate: 0 0; } }
+.sq-bar-run { position: absolute; inset: 0; display: grid; place-items: center; animation: sq-bar 2.2s cubic-bezier(.3, 0, .2, 1) infinite; }
+.sq-bar-run span { font: 400 .78em/1 var(--f-menu); letter-spacing: .3em; color: var(--yellow); padding: 0; white-space: nowrap; text-shadow: 0 0 .3em rgba(255, 225, 26, .7); }
+.sq-bar-run span::before, .sq-bar-run span::after { content: "★"; margin: 0 .9em; color: var(--red); letter-spacing: 0; }
+@keyframes sq-bar { 0% { translate: -105% 0; } 13%, 74% { translate: 0 0; } 87%, 100% { translate: 105% 0; } } /* (a sliding strip always showed a word cut in half) */
 .sq-scr.sq-star { background: var(--red); }
 .sq-starmark { position: relative; z-index: 1; width: 6.4em; height: 6.4em; background: var(--white); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   animation: sq-spin 1.2s linear infinite; }
@@ -1018,8 +1047,8 @@ body[data-mode="page"] .screen-page { padding-bottom: 120px; } /* nothing import
    panels and slanted its own way, then the list on its own off-square sheet, nudged right */
 .cc-head { position: relative; display: flex; align-items: center; padding: 14px 104px 16px 20px; margin-right: 10px; background: var(--black);
   clip-path: polygon(0 12%, 38% 4%, 40% 0, 100% 6%, 96% 58%, 99% 100%, 22% 94%, 2% 100%); }
-.cc-title { margin: 0; display: grid; font-family: var(--f-head); font-weight: 400; line-height: .92; color: var(--red); text-shadow: 3px 3px 0 var(--red-ink); letter-spacing: .5px; }
-.cc-pre { font-size: 24px; translate: 10px 2px; rotate: -3deg; }
+.cc-title { margin: 0; display: grid; row-gap: 5px; font-family: var(--f-head); font-weight: 400; line-height: 1; color: var(--red); text-shadow: 3px 3px 0 var(--red-ink); letter-spacing: .5px; } /* two clean lines with air between them (they used to sit on each other) */
+.cc-pre { font-size: 24px; translate: 8px 0; rotate: -3deg; text-shadow: 2px 2px 0 var(--red-ink); }
 .cc-big { font-size: 50px; }
 /* the number box slants into the header from the right and pokes out over its top edge */
 .cc-num { position: absolute; z-index: 2; right: -6px; top: -18px; display: grid; place-items: center; width: 92px; height: 82px; background: var(--red); border: 5px solid var(--black); box-shadow: 6px 6px 0 var(--black); rotate: -11deg; }
@@ -1049,11 +1078,11 @@ body[data-mode="page"] .screen-page { padding-bottom: 120px; } /* nothing import
 .cc-row:focus-visible { outline: 3px solid var(--yellow); outline-offset: -3px; }
 /* a MAIN stamp on every objective: red block letters with a black edge, tilted, hanging off the
    sheet's right edge (John, Nov 19: "each of them has the word main on it"); rows keep a lane clear */
-.cc-row { position: relative; padding-right: 74px; }
-.cc-main { position: absolute; right: -14px; top: 50%; translate: 0 -50%; rotate: -14deg; pointer-events: none;
+.cc-row { position: relative; padding-right: 86px; }
+.cc-main { position: absolute; right: 12px; top: 50%; translate: 0 -50%; rotate: -8deg; pointer-events: none; /* inside the sheet (hanging off its edge they cut the jagged border) */
   font-family: var(--f-head); font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: 1px; color: var(--red); -webkit-text-stroke: 3px var(--black); paint-order: stroke fill; }
-.cc-list li:nth-child(2) .cc-main { right: -6px; rotate: -10deg; }
-.cc-list li:nth-child(3) .cc-main { right: -18px; rotate: -17deg; }
+.cc-list li:nth-child(2) .cc-main { right: 16px; rotate: -5deg; }
+.cc-list li:nth-child(3) .cc-main { right: 10px; rotate: -10deg; }
 /* tablets and small laptops: a narrower stamp lane, so the rows stay on one line */
 @media (min-width: 761px) and (max-width: 1199px) {
   .cc-row { padding-right: 56px; white-space: nowrap; }

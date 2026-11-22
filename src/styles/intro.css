@@ -86,7 +86,7 @@
 
 /* ENTER THE STATION: slams in under the words at 100% */
 .ld-go { grid-row: 2; margin: 0; border: 0; font-family: var(--f-menu); font-size: clamp(20px, 4vmin, 30px); letter-spacing: .12em; color: var(--black);
-  background: var(--white); padding: 8px 22px 6px 26px; min-height: 48px; transform: skew(-12deg) rotate(-2deg); box-shadow: 6px 6px 0 var(--red); cursor: pointer; }
+  background: var(--white); padding: 8px 22px 6px 26px; min-height: 48px; transform: skew(-12deg) rotate(-11.8deg); box-shadow: 6px 6px 0 var(--red); cursor: pointer; } /* on the red band's own slope (11.8 degrees), so the button rides the band */
 .ld-go:not([hidden]) { animation: ldSlam .34s cubic-bezier(.2, 1.7, .4, 1) both, ldBlink 1.2s steps(2) .6s infinite; }
 @keyframes ldSlam { from { translate: 0 30px; scale: 2.2; opacity: 0; } to { translate: 0 0; scale: 1; opacity: 1; } }
 @keyframes ldBlink { 50% { background: var(--yellow); box-shadow: 6px 6px 0 var(--black); } }

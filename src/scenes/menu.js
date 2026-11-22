@@ -55,7 +55,7 @@ export function createMenu(go) {
   function render() {
     stair.innerHTML = MENU_ITEMS.map(
       (m, i) => `<li role="none" style="--i:${i}"><button class="stair-item" role="menuitem" type="button" data-nav data-go="${m.id}" aria-label="${esc(m.label)}">
-        <span class="cursor-star" aria-hidden="true"></span><span class="si-text" aria-hidden="true">${cutType(m.label, i + 21, { mixCase: true })}</span>
+        <span class="cursor-star" aria-hidden="true"></span><span class="si-text" aria-hidden="true">${cutType(m.label, i + 21, { mixCase: true, tight: true })}</span>
         ${store.has('visited', m.id) ? '<span class="si-seen" role="img" aria-label="seen"></span>' : ''}</button></li>`
     ).join('');
     const read = MENU_ITEMS.filter((m) => m.id !== 'system' && store.has('visited', m.id)).length;
@@ -78,7 +78,10 @@ export function createMenu(go) {
     const i = MENU_ITEMS.findIndex((m) => m.id === b.dataset.go);
     // the picked item's number in big cut-out digits, and its name huge at the bottom
     num.innerHTML = [...String(i + 1).padStart(2, '0')].map((d, k) => `<span class="mn-d mn-d${k}">${d}</span>`).join('');
-    big.innerHTML = cutType(MENU_ITEMS[i].label, i + 61, { mixCase: true });
+    // two copies, stacked: the back one draws only the letters' black boxes, the front one only the letters, so a
+    // boxed letter's backing can never cover part of its neighbour (it used to leave stray ticks beside the T's)
+    const word = cutType(MENU_ITEMS[i].label, i + 61, { tight: true }); // all capitals: a small t among them read as a stray tick
+    big.innerHTML = `<span class="mn-under">${word}</span><span class="mn-over">${word}</span>`;
     scramble(teaser, menuTeasers[b.dataset.go] || '', { duration: 0.3 });
     if (!reducedMotion()) {
       gsap.fromTo(big, { x: 40, scale: 1.12, opacity: 0.4 }, { x: 0, scale: 1, opacity: 1, duration: 0.22, ease: 'back.out(2.4)', overwrite: true });

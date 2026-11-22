@@ -27,6 +27,9 @@ const mark = (text) =>
     .map((part, i) => (i % 2 ? `<span class="hl">${esc(part)}</span>` : esc(part)))
     .join('');
 
+/* The case file's objectives: the proof numbers get the marker, a bare year never does. */
+const markProof = (text) => mark(text).replace(/<span class="hl">((?:19|20)\d\d)<\/span>/g, '$1');
+
 /* Big outlined word drifting behind each page (background depth layer). */
 const watermark = (word) => `<div class="pg-mark" aria-hidden="true"><span>${word}</span><span>${word}</span></div>`;
 
@@ -76,7 +79,7 @@ export function dossierMarkup(m) {
     </div>
     <p class="dossier-hint">${isCleared(m.id) ? 'Case cleared. Thanks for checking it out.' : 'Visit the live app or the code to clear this case.'}</p>
     <div class="dossier-cols">
-      <div><h3>OBJECTIVES</h3><ul class="obj">${m.objectives.map((o) => `<li>${esc(o)}</li>`).join('')}</ul></div>
+      <div><h3>OBJECTIVES</h3><ul class="obj">${m.objectives.map((o) => `<li>${markProof(o)}</li>`).join('')}</ul></div>
       <div><h3>LOOT</h3><ul class="loot">${m.loot.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
     </div>
     ${isCleared(m.id) ? clearStampMarkup() : ''}
@@ -244,7 +247,6 @@ function stats() {
     title: 'STATS',
     html: `${watermark('PROFILE')}${back}${head('STATS', 'The person behind the projects.')}
       <section class="idcard" data-in>
-        <button class="gpa-burst" type="button" aria-label="Off the record. Press to flip for a secret stat." aria-pressed="false"><span class="gb-front"><b>???</b><small>OFF RECORD</small></span><span class="gb-back"><b>MAX</b><small>BEE FEAR</small></span></button>
         <div class="id-band"><span>ID · ${esc(resume.name.toUpperCase())}</span><span>${esc(resume.location)}</span></div>
         <div class="id-body">
           <figure class="gpa-card" aria-label="GPA ${esc(e.gpa)} out of 4.00">
@@ -258,6 +260,7 @@ function stats() {
             <div class="id-chips"><span>DEAN’S LIST ×2</span><span>${esc(e.grad.toUpperCase())}</span><span>${esc(e.dates)}</span></div>
             <p class="id-honors">${esc(e.honors)}</p>
           </div>
+          <button class="gpa-burst" type="button" aria-label="Off the record. Press to flip for a secret stat." aria-pressed="false"><span class="gb-front"><b>???</b><small>OFF RECORD</small></span><span class="gb-back"><b>MAX</b><small>BEE FEAR</small></span></button>
         </div>
       </section>
       <ul class="traits">${resume.funFacts.map((f, i) => `<li class="trait t${i}" data-in><i class="ff-star" aria-hidden="true"></i>${esc(f)}</li>`).join('')}</ul>
@@ -331,9 +334,21 @@ function contact() {
       <div class="card-stage"><div class="pg-rays" aria-hidden="true"></div><div class="ccard" id="ccard">
         <div class="ccard-face ccard-front" aria-hidden="true"><div class="ccard-emblem"></div></div>
         <div class="ccard-face ccard-back">
+          <svg class="ccard-art" viewBox="0 0 600 370" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+            <defs><pattern id="ccDots" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(28)"><circle cx="5.5" cy="5.5" r="2.3" fill="#0B0B0B" opacity=".34"/></pattern>
+              <linearGradient id="ccFade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".55" stop-color="#fff"/></linearGradient>
+              <mask id="ccMask"><rect width="600" height="370" fill="url(#ccFade)"/></mask></defs>
+            <path d="M452 0H600V370H352Z" fill="#0B0B0B"/>
+            <path d="M462 0H600V370H366Z" fill="#E5191C"/>
+            <path d="M462 0H600V370H366Z" fill="url(#ccDots)" mask="url(#ccMask)"/>
+            <path d="M560 0H600V370H496L528 214 506 196Z" fill="#0B0B0B"/>
+            <path d="M472 78l14 42h44l-36 27 14 43-36-27-36 27 14-43-36-27h44Z" transform="rotate(-11 472 135) translate(7 7)" fill="#0B0B0B"/>
+            <path d="M472 78l14 42h44l-36 27 14 43-36-27-36 27 14-43-36-27h44Z" transform="rotate(-11 472 135)" fill="#F5F5F0" stroke="#0B0B0B" stroke-width="6" stroke-linejoin="miter"/>
+          </svg>
           <span class="ccard-name">${esc(resume.name)}</span>
+          <span class="ccard-rule" aria-hidden="true"></span>
           <span class="ccard-role">${esc(resume.role)} · ${esc(resume.education.school)}, ${esc(resume.education.grad)}</span>
-          <span class="ccard-line">${esc(resume.location)} · ${esc(resume.status)}</span>
+          <span class="ccard-line"><span class="ccard-loc">${esc(resume.location)}</span><span class="ccard-sep"> · </span><span class="ccard-status">${esc(resume.status)}</span></span>
         </div>
       </div></div>
       <div class="contact-btns" data-in>
@@ -391,7 +406,13 @@ function system() {
           <p>Most sounds are synthesized live. These are real recordings, free under Creative Commons:</p>
           <ul>${SOUND_CREDITS.map((c) => `<li><b>${esc(c.what)}</b> · <a href="${esc(c.source)}" target="_blank" rel="noopener">${esc(c.pack)}</a> by ${c.authorUrl ? `<a href="${esc(c.authorUrl)}" target="_blank" rel="noopener">${esc(c.author)}</a>` : esc(c.author)} · <a href="${esc(c.licenseUrl)}" target="_blank" rel="noopener">${esc(c.license)}</a>${c.changes ? ` · ${esc(c.changes)}` : ''}</li>`).join('')}</ul>
         </section>
-      </div>`
+      </div>`,
+    after(root) {
+      // the volume meter's red fill follows the knob
+      const vol = root.querySelector('#musicVol');
+      const fill = () => vol.style.setProperty('--v', `${Math.round(Number(vol.value) * 100)}%`);
+      if (vol) { fill(); vol.addEventListener('input', fill); }
+    }
   };
 }
 
@@ -408,15 +429,58 @@ function secret() {
   };
 }
 
+/* The fold (Nov 22, the outside judge on most chapters: "content is sliced by the bottom of the frame"): on a wide
+   screen, a block that would only peek over the bottom edge of the first screen (a sliver cut by the frame) starts
+   just below it instead, so the first screen ends on a gap and the black edge. A block cut near its middle is left
+   alone (pushing it would leave a hole). Measured with offsetTop, which entrance moves never change. */
+let foldBound = false;
+let foldRoot = null;
+function foldSnap(root) {
+  foldRoot = root;
+  const sc = root.closest('.screen-page');
+  if (!sc) return;
+  let tries = 0;
+  const run = () => {
+    if (!root.isConnected || foldRoot !== root) return;
+    if (!sc.clientHeight && tries++ < 25) { setTimeout(run, 120); return; } // (the page is built under the film cut, before its screen shows)
+    root.querySelectorAll('[data-fold]').forEach((el) => { el.style.marginTop = ''; delete el.dataset.fold; });
+    if (window.innerWidth < 761 || sc.clientHeight < 600) return;
+    const fold = sc.clientHeight - 30;
+    const topOf = (el) => { let y = 0; for (let n = el; n && n !== sc; n = n.offsetParent) y += n.offsetTop; return y; };
+    const blocks = [...root.children].flatMap((el) => (el.matches('.route, .sys-grid, .crew-board') ? [...el.children] : [el]))
+      .filter((el) => el.offsetHeight > 0 && !el.matches('.pg-mark, .page-top, .page-head, .route-line, .crew-cursor, .crew-list') && getComputedStyle(el).position !== 'absolute' && getComputedStyle(el).position !== 'fixed');
+    for (const el of blocks) {
+      const top = topOf(el);
+      const peek = fold - top;
+      if (peek > -14 && peek < 150 && el.offsetHeight > peek) {
+        el.dataset.fold = '1';
+        el.style.marginTop = `${(parseFloat(getComputedStyle(el).marginTop) || 0) + peek + 36}px`;
+      }
+    }
+  };
+  requestAnimationFrame(run);
+  document.fonts?.ready.then(() => requestAnimationFrame(run));
+  if (!foldBound) {
+    foldBound = true;
+    let t = 0;
+    window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => foldRoot && foldSnap(foldRoot), 160); }, { passive: true });
+  }
+}
+const folded = (render) => (ctx) => {
+  const r = render(ctx);
+  const after = r.after;
+  return { ...r, after(root) { after?.(root); foldSnap(root); } };
+};
+
 export const SECTION_TITLES = { missions: 'MISSIONS', skills: 'SKILLS', different: 'MY EDGE', stats: 'STATS', 'side-quests': 'SIDE QUESTS', contact: 'CONTACT', system: 'SETTINGS', secret: 'BEHIND THE SCENES' };
 
 export const SECTION_RENDERERS = {
-  missions,
-  skills,
-  different,
-  stats,
-  'side-quests': sideQuests,
-  contact,
-  system,
+  missions: folded(missions),
+  skills: folded(skills),
+  different: folded(different),
+  stats: folded(stats),
+  'side-quests': folded(sideQuests),
+  contact: folded(contact),
+  system: folded(system),
   secret
 };

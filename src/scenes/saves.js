@@ -35,7 +35,7 @@ function slip(s, i) {
   const no = `<span class="sv-no" aria-hidden="true"><small>No.</small>${i + 1}</span>`;
   if (!s) {
     return `<li class="sv-li" style="${pile(i)}"><i class="sv-star" aria-hidden="true"></i><button class="sv-slot sv-empty" type="button" data-i="${i}" aria-label="File ${i + 1}: empty. Start a new game.">
-      ${no}<span class="sv-new" aria-hidden="true">${cutType('NEW GAME', 60 + i)}</span><span class="sv-hint" aria-hidden="true">EMPTY FILE</span><span class="sv-stamp" aria-hidden="true">NO DATA</span>
+      ${no}<span class="sv-new" aria-hidden="true">${cutType('NEW GAME', 61)}</span><span class="sv-hint" aria-hidden="true">EMPTY FILE</span><span class="sv-stamp" aria-hidden="true">NO DATA</span>
       <span class="sv-more" aria-hidden="true"><span class="sv-go">START NEW GAME ▸</span></span></button></li>`;
   }
   const p = progress(s);

@@ -559,6 +559,13 @@ export async function trainWipe(swap, label = '') {
   await track(tl);
 }
 
+/* the card's wax seal: an uneven pressed blob with our star stamped into it, a hard cel light on its rim
+   and a hard shadow on the paper (drawn, so it is the same at every size) */
+const SEAL = `<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="#0B0B0B" opacity=".3" transform="translate(5 6)"><circle cx="50" cy="50" r="43"/><circle cx="14" cy="66" r="10"/><circle cx="80" cy="84" r="8"/><circle cx="88" cy="30" r="7"/></g>`
+  + `<g fill="#D61519" stroke="#0B0B0B" stroke-width="2.4" stroke-linejoin="round"><path d="M50 7c13 0 22 4 30 13 3-2 9 0 12 5 3 6 0 11-3 13 4 9 4 19 1 28-3 9-8 15-12 18-2 5-9 6-13 2-4-1-5-4-5-4-9 2-21 1-31-5-4-3-8-6-11-11-7 1-12-3-13-9-1-6 3-10 7-11-2-9 0-19 5-27C24 12 36 7 50 7z"/></g>`
+  + `<circle cx="49" cy="49" r="29" fill="#B30F12" stroke="#7E0A0D" stroke-width="3"/><path d="M26 38a26 26 0 0 1 20-15" fill="none" stroke="#FF8A8C" stroke-width="4.5"/>`
+  + `<path d="M49 27l6.2 14.6 15.8 1.3-12 10.4 3.7 15.4L49 60.5 35.3 68.7 39 53.3 27 42.9l15.8-1.3z" fill="#F7F1E1" stroke="#0B0B0B" stroke-width="2.2" stroke-linejoin="round"/><path d="M79 70a34 34 0 0 1-17 16" fill="none" stroke="#7E0A0D" stroke-width="4"/></svg>`;
+
 /* CALLING CARD (into CONTACT): a calling card is thrown at the camera, spinning in from far
    away; it smacks into the lens and fills the screen, then flips away to reveal the page.
    The site's own ending motif, so the finale gets the signature shot. (~1.1s) */
@@ -572,9 +579,9 @@ export function cardWipe(swap, label = 'CONTACT') {
   const el = document.createElement('div');
   el.className = 'fall cardshot';
   el.setAttribute('aria-hidden', 'true');
-  el.innerHTML = `<div class="cs-dim"></div><div class="cs-card"><span class="cs-seal"></span><small>A calling card for you</small><b></b><em>Consider it stolen.</em></div>${LETTERBOX}`;
-  el.querySelector('.cs-card b').textContent = label;
-  const [dim, card] = el.children;
+  el.innerHTML = `<div class="cs-dim"></div><div class="cs-streaks"><i></i><i></i><i></i></div><div class="cs-card"><span class="cs-seal">${SEAL}</span><small>A calling card for you</small><b class="ransom"></b><em>Consider it stolen.</em></div>${LETTERBOX}`;
+  ransom(el.querySelector('.cs-card b'), label, label.length + 5);
+  const [dim, streaks, card] = el.children;
   const bars = el.querySelectorAll('.lb');
   document.body.appendChild(el);
   const r = card.getBoundingClientRect();
@@ -589,6 +596,8 @@ export function cardWipe(swap, label = 'CONTACT') {
     .add(() => sfx('whip'), 0.05)
     .fromTo(card, { scale: 0.04, rotation: -540, rotationY: 0, x: W * 0.32, y: -H * 0.3 },
       { scale: 1, rotation: -6, x: 0, y: 0, transformPerspective: 900, duration: 0.5, ease: 'power3.out' }, 0)
+    .fromTo(streaks.children, { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.16, ease: 'power3.out', stagger: 0.03 }, 0.04)
+    .to(streaks.children, { opacity: 0, duration: 0.14, ease: 'power2.in' }, 0.44)
     // 2. a beat to read it, then it smacks into the lens
     .to(card, { scale: cover, rotation: 0, duration: 0.24, ease: 'power3.in' }, 0.62)
     .add(() => {

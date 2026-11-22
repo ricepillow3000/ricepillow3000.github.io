@@ -14,7 +14,7 @@ body.sv-open { overflow: hidden; }
 .sv-stripes { position: absolute; inset: 0; pointer-events: none; }
 .sv-stripes i { position: absolute; left: 20%; right: -20%; height: 3px; background: var(--white); rotate: -9deg; opacity: .9; }
 .sv-stripes i:nth-child(-n+2) { display: none; } /* (John, Nov 19: no thin white line over the first file) */
-.sv-stripes i:nth-child(3) { bottom: 6%; left: 55%; }
+.sv-stripes i:nth-child(3) { bottom: 6%; left: 55%; height: 5px; opacity: 1; box-shadow: 0 10px 0 var(--red); } /* a deliberate pair, white over red (one thin hairline read as a stray line) */
 
 .sv-title { position: absolute; z-index: 4; /* (over the picked file's arm, which reaches up into it) */ left: var(--gutter); top: max(22px, 5vh); margin: 0; font-family: var(--f-head); font-weight: 400;
   font-size: clamp(38px, min(5.6vw, 10vh), 88px); line-height: 1; rotate: -5deg; transform-origin: left bottom; color: var(--white); white-space: nowrap;
@@ -117,7 +117,8 @@ body.sv-open { overflow: hidden; }
 .sv-time { display: flex; align-items: baseline; gap: 6px; line-height: 1; font-family: var(--f-head); }
 .sv-time small { font: 400 clamp(11px, 1.6vh, 14px)/1 var(--f-menu); letter-spacing: 1px; color: var(--white); padding: 2px 4px 1px; background: var(--black); white-space: nowrap; }
 .sv-time b { font-weight: 400; font-size: clamp(22px, 3.8vh, 40px); }
-.sv-go { font-family: var(--f-menu); font-size: clamp(16px, 2.6vh, 24px); letter-spacing: 1px; padding: 3px 12px 1px; background: var(--black); color: var(--white); white-space: nowrap; }
+.sv-go { display: inline-block; font-family: var(--f-menu); font-size: clamp(16px, 2.6vh, 24px); letter-spacing: 1px; padding: 3px 14px 1px; background: var(--black); color: var(--white); white-space: nowrap;
+  transform: skew(var(--skew)); box-shadow: 4px 4px 0 var(--white); } /* a slanted tab with a hard print, like every HUD tab (a flat black box read as a web pill) */
 
 /* an empty file: NEW GAME (the same white paper; its words say it is empty) */
 .sv-new { font-family: var(--f-head); font-size: clamp(24px, 4.4vh, 46px); line-height: 1; color: var(--white); white-space: nowrap;
@@ -131,6 +132,13 @@ body.sv-open { overflow: hidden; }
   font: 400 clamp(18px, 3.6vh, 34px)/1 var(--f-head); letter-spacing: .12em; white-space: nowrap;
   color: #B4AFA0; border: .11em solid currentColor; box-shadow: inset 0 0 0 .07em var(--white), inset 0 0 0 .13em currentColor; }
 .sv-slot.on .sv-stamp { color: rgba(255, 255, 255, .5); box-shadow: inset 0 0 0 .07em var(--red), inset 0 0 0 .13em currentColor; }
+/* each stamp was pressed by hand: its own tilt and spot, kept where its file is still tall enough to hold it whole */
+.sv-stamp { align-self: center; }
+.sv-slot.on .sv-stamp { grid-row: 1 / span 2; }
+.sv-li:nth-child(2) .sv-stamp { rotate: -3deg; margin-right: clamp(40px, 15vw, 250px); }
+.sv-li:nth-child(3) .sv-stamp { rotate: -7deg; margin-right: clamp(60px, 24vw, 390px); }
+.sv-li:nth-child(4) .sv-stamp { rotate: -4deg; margin-right: clamp(50px, 19vw, 310px); }
+.sv-li:nth-child(5) .sv-stamp { rotate: -6deg; margin-right: clamp(70px, 28vw, 450px); }
 @media (max-width: 760px) { .sv-stamp { display: none; } }
 
 /* a finished file: COMPLETED, cut type on a white burst */

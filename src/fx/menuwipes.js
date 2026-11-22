@@ -163,11 +163,11 @@ const SQ_SCREENS = [ // [id, TL, TR, BR, BL] in the picture's own px, and the ad
   ['jn', [480, 328], [537, 332], [535, 388], [480, 388]],
 ];
 const SQ_ADS = {
-  main: '<div class="sq-bar"><div class="sq-bar-run"><span>NOW SHOWING</span><span>NOW SHOWING</span><span>NOW SHOWING</span><span>NOW SHOWING</span></div></div><span class="sq-label ransom" data-label></span><i class="sq-slash"></i>',
+  main: '<div class="sq-bar"><div class="sq-bar-run"><span>NOW SHOWING</span></div></div><span class="sq-label ransom" data-label></span><i class="sq-slash"></i>',
   time: '<b class="sq-look">LOOK</b><b class="sq-big">CLOSER</b><i class="sq-eye"></i>',
   name: '<b class="sq-wanted">WANTED</b><b class="sq-john">JOHN</b><b class="sq-ng">NGUYEN</b>',
   star: '<i class="sq-starmark"></i>',
-  proof: '<div class="sq-tick"><b>STEAL <em>THE SHOW</em> ★ </b><b>STEAL <em>THE SHOW</em> ★ </b></div>',
+  proof: '<div class="sq-tick"><b>STEAL</b><b><em>THE SHOW</em> ★</b></div>',
   motto: '<b>BREAK THE</b><b class="sq-red" data-t="ROUTINE">ROUTINE</b>',
   stripes: '<i class="sq-run"></i>',
   checks: '<b class="sq-sm">NEW</b><b class="sq-big">?</b><b class="sq-sm">LEAD</b>',

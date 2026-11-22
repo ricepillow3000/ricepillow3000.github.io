@@ -189,7 +189,7 @@ button.gpa-burst{ border: 0; padding: 0; cursor: pointer; perspective: 400px; }
 .plan-id { display: grid; justify-items: start; gap: 10px; }
 .plan-name { display: flex; align-items: flex-end; gap: 14px; }
 .plan-name .ransom { font-size: clamp(40px, min(5.2vw, 8vh), 78px); margin: 0; }
-.plan-role { margin: 0; font: 700 italic clamp(13px, 1.15vw, 16px)/1.2 var(--f-ui); letter-spacing: .4px; color: var(--black); background: var(--white); padding: 4px 12px; transform: skew(var(--skew)); }
+.plan-role { margin: 0; font: 400 clamp(15px, 1.35vw, 19px)/1.2 var(--f-menu); letter-spacing: 1.4px; text-transform: uppercase; color: var(--yellow); background: var(--black); padding: 3px 12px 1px; transform: skew(var(--skew)); box-shadow: 4px 4px 0 var(--white); } /* the title's own role line (yellow on a black slab, a hard white print); the white italic strip read as default web text */
 .plan-note { grid-column: 1 / -1; margin: 0; max-width: 560px; font: 600 16px/1.35 var(--f-body); background: var(--black); color: var(--white); padding: 8px 14px; box-shadow: 5px 5px 0 var(--red); }
 .plan-note b { color: var(--yellow); }
 .plan-side { display: grid; justify-items: end; gap: 12px; }
@@ -301,7 +301,7 @@ body[data-mode="board"] .hud-tl { display: none; } /* the tiny rotated status ta
   .plan-head { grid-template-columns: 1fr; }
   .plan-side { justify-items: start; }
   .cmd-right .progress-chip { display: none; } /* phones: read chapters already shrink and get a star */
-  .plan-role { font-size: 12px; padding: 3px 10px; }
+  .plan-role { font-size: 13px; letter-spacing: .5px; padding: 3px 10px 1px; }
   .plan-proof { gap: 8px; }
   .pp { font-size: 11px; padding: 5px 8px 4px; letter-spacing: 1px; }
   .pp b { font-size: 17px; }

@@ -1245,11 +1245,13 @@ test('SIDE QUESTS plays THE SQUARE: a painted square with nine screens, the big 
   await expect(sq.locator('.sq-scr')).toHaveCount(9);
   expect((await sq.locator('.sq-scr.sq-main .sq-label').textContent()).replace(/\s+/g, '')).toMatch(/SIDEQUESTS/i);
   for (const t of ['CLOSER', 'JOHN', 'ROUTINE', 'STEAL']) await expect(sq).toContainText(t);
-  // the big screen's black bar: NOW SHOWING sliding left to right, a new copy following from the left
+  // the big screen's black bar: NOW SHOWING comes in from the left, rests whole, leaves to the right, and the next one follows
   const run = sq.locator('.sq-main .sq-bar .sq-bar-run');
-  await expect(run.locator('span')).toHaveCount(4);
-  const x0 = await run.evaluate((e) => e.getBoundingClientRect().left);
-  await expect.poll(() => run.evaluate((e) => e.getBoundingClientRect().left), { timeout: 3000 }).toBeGreaterThan(x0);
+  await expect(run.locator('span')).toHaveCount(1);
+  const xs = await run.evaluate(async (e) => { const a = e.getAnimations()[0]; const out = []; for (const f of [0.02, 0.4, 0.6, 0.95]) { a.currentTime = f * 2200; out.push(e.getBoundingClientRect().left); } return out; });
+  expect(xs[1]).toBeGreaterThan(xs[0] + 5); // in from the left
+  expect(Math.abs(xs[2] - xs[1])).toBeLessThan(1); // resting, readable
+  expect(xs[3]).toBeGreaterThan(xs[2] + 5); // out to the right
   for (const t of ['TAKE YOUR', '2,000+', '727', 'BORING']) await expect(sq).not.toContainText(t); // (fresh lines, not the ones the rest of the site repeats)
   await expect(page.locator('body')).toHaveAttribute('data-screen', 'side-quests', { timeout: 12000 });
   await expect(sq).toHaveCount(0, { timeout: 8000 }); // (it cleans itself up)

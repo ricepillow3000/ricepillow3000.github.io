@@ -283,7 +283,10 @@ function startTicker(svg) {
       th += ring.widths[i];
       const cos = Math.cos(t);
       // (Nov 21: only what changed is written: a letter round the back was set hidden again every frame)
-      if (cos <= 0.04) { if (c._v !== 0) { c.style.visibility = 'hidden'; c._v = 0; } return; }
+      // (a letter seen nearly edge-on is a sliver of dots that reads as a broken glyph: it dims out as it turns away, and is gone before it is a sliver)
+      if (cos <= 0.3) { if (c._v !== 0) { c.style.visibility = 'hidden'; c._v = 0; } return; }
+      const op = cos >= 0.56 ? 1 : Math.ceil(((cos - 0.3) / 0.26) * 6) / 6;
+      if (c._o !== op) { c.setAttribute('opacity', op.toFixed(2)); c._o = op; }
       const { cx, R, t0, ta, b0, ba } = ring.g;
       const x = cx + R * Math.sin(t);
       const y = (t0 + b0) / 2 + ((ta + ba) / 2) * (1 - cos);

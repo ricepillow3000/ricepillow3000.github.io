@@ -68,7 +68,7 @@ function planMarkup(ctx) {
             <span class="pl-blade" aria-hidden="true"><i></i></span>
             <span class="pl-star" aria-hidden="true"></span>
             <span class="pl-no" aria-hidden="true">${no(i)} </span>
-            <span class="pl-word">${cutType(label(id), i + 3)}</span>
+            <span class="pl-word">${cutType(label(id), i + 3, { tight: true })}</span>
           </a></li>`).join('')}</ol>
       </nav>
 

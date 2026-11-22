@@ -9,4 +9,9 @@
   .paper-body { grid-template-columns: 1fr 2.2fr !important; gap: 20px !important; padding: 6px 4px 0 !important; }
   .paper section { break-inside: avoid; }
   a { text-decoration: none; }
+  /* paper: ordinary bullets and outlined skills (backgrounds do not print) */
+  .paper ul:not(.chips) { list-style: disc; padding-left: 18px; }
+  .paper ul:not(.chips) > li::before, .paper header::before { display: none; }
+  .paper .chips li, .paper .chips li:nth-child(3n) { background: none; color: #151515; transform: none; box-shadow: none; border: 1.5px solid #151515; font: 600 9.5pt/1.35 var(--f-body); }
+  .paper-body a { color: #151515; font-weight: inherit; }
 }

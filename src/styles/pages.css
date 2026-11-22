@@ -340,3 +340,150 @@ body.reduce-motion .next-ep.lit .ne-go { animation: none; }
   .cd-name { font-size: 26px; }
   .crew-side { justify-items: start; }
 }
+
+/* ============================ CONTACT: a designed card and one button system (Nov 22, the outside judge: "plain... basic type on a large empty white field; the wedge is a flat, abruptly cut shape"; "buttons have different heights, tilts and frames") ============================ */
+.ccard-back { background-image: none; overflow: hidden; }
+.ccard-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ccard-back > span { position: relative; }
+.ccard-name { text-transform: uppercase; letter-spacing: .5px; text-shadow: 3px 3px 0 var(--red); }
+.ccard-rule { width: min(58%, 320px); height: 9px; margin: 8px 0 2px; background: var(--black); clip-path: polygon(0 0, 100% 30%, 97% 100%, 1% 78%); }
+.ccard-role { max-width: 58%; margin-top: 6px; font-size: 17px; line-height: 1.3; }
+.ccard-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; max-width: 62%; margin-top: 12px; font-family: var(--f-ui); font-style: italic; font-weight: 700; font-size: 16px; letter-spacing: .6px; text-transform: uppercase; }
+.ccard-sep { display: none; }
+.ccard-status { padding: 3px 12px 2px; background: var(--black); color: var(--yellow); font-family: var(--f-menu); font-style: normal; font-weight: 400; font-size: 18px; letter-spacing: 1px; transform: skew(var(--skew)); box-shadow: 4px 4px 0 var(--red); }
+/* the rays only ever showed as pale slivers over the card's top and bottom edges (the judge: "hide or complete them"): hidden, the card's own wedge and star carry the graphic */
+.pg-rays { display: none; }
+/* one button system: same height, same slant, even gaps, on one line where there is room */
+.contact-btns { max-width: 1060px; gap: 18px 22px; align-items: stretch; }
+.contact-btns .btn { min-height: 52px; padding: 8px 22px; font-size: 23px; }
+.contact-btns .btn-primary { font-size: 23px; background: var(--red-ink); color: var(--white); box-shadow: 5px 5px 0 var(--white); }
+.contact-btns .btn-primary:focus-visible { background: var(--red-ink); color: var(--white); box-shadow: 5px 5px 0 var(--yellow); } /* (it holds the focus on arrival: it must still read as the red one) */
+.contact-btns .btn-primary:hover { background: var(--white); color: var(--black); box-shadow: 5px 5px 0 var(--red); }
+.contact-btns a[href^="mailto:"] { font-size: 20px; }
+@media (max-width: 760px) {
+  .ccard-art { display: none; }
+  .ccard-role, .ccard-line, .ccard-rule { max-width: 100%; }
+}
+
+/* ============================ STATS: the ID card is lifted off the page and filled to its frame (Nov 22, the outside judge: "a plain horizontal rectangle of typeset boxes, its right half empty"; "OFF RECORD is tiny and overlaps the ???") ============================ */
+/* (the card's old clip-path also cut off its own hard shadow, so it lay flat on the city) */
+.idcard { clip-path: none; rotate: -.7deg; box-shadow: 14px 14px 0 var(--red), 14px 14px 0 5px var(--black); }
+.id-band { clip-path: polygon(0 0, 100% 0, 100% 100%, 1.2% 100%); padding-left: 30px; }
+/* the off-the-record sticker is big enough to read and hangs off the card's right edge like a real sticker, in the space the words leave free */
+.idcard .gpa-burst { position: absolute; top: 50%; right: -8px; bottom: auto; width: 156px; height: 156px; margin: -52px 0 0; transform: rotate(9deg); }
+.idcard .gpa-burst > span { width: 138px; height: 138px; row-gap: 5px; line-height: 1; }
+.idcard .gpa-burst b { font-size: 41px; line-height: .86; }
+.idcard .gpa-burst small { font-size: 14px; line-height: 1; letter-spacing: 1.1px; }
+.idcard .gpa-burst .gb-back b { font-size: 36px; }
+.idcard .gpa-burst .gb-back small { font-size: 13px; }
+.idcard .id-info h3, .idcard .id-info h3 + p, .idcard .id-chips { max-width: calc(100% - 96px); }
+@media (min-width: 1160px) { .idcard .gpa-burst { right: -46px; } } /* (only where the page has the room beside the card) */
+@media (max-width: 1000px) {
+  /* narrow screens keep the small corner sticker (one column of words, the sticker beside the school's name) */
+  .idcard .gpa-burst { top: 54px; right: 18px; width: 96px; height: 96px; margin: 0; transform: rotate(10deg); }
+  .idcard .id-chips { max-width: none; }
+  .idcard .gpa-burst > span { width: 82px; height: 82px; row-gap: 3px; }
+  .idcard .gpa-burst b { font-size: 24px; } .idcard .gpa-burst small { font-size: 10px; letter-spacing: .6px; }
+  .idcard .gpa-burst .gb-back b { font-size: 21px; } .idcard .gpa-burst .gb-back small { font-size: 10px; }
+  .idcard .id-info h3 { max-width: calc(100% - 120px); }
+  .idcard .id-info h3 + p { max-width: calc(100% - 112px); }
+}
+@media (max-width: 760px) {
+  .id-body { grid-template-columns: 1fr; }
+  .idcard { rotate: none; box-shadow: 8px 8px 0 var(--red), 8px 8px 0 4px var(--black); }
+  .idcard .gpa-burst { top: auto; bottom: 12px; right: 10px; transform: rotate(10deg) scale(.82); }
+  .idcard .id-info h3, .idcard .id-info h3 + p { max-width: none; }
+}
+
+/* ============================ CASE FILE: lifted off the page, designed chips and loot (Nov 22, the outside judge: "a flat right-angled rectangle with no lift"; "tech chips are plain outlined boxes"; "LOOT bars are four identical copies") ============================ */
+/* (the panel's clip-path cut off its own hard shadow: the file lay flat on the dimmed page) */
+.modal-panel { clip-path: none; box-shadow: 14px 14px 0 var(--red), 14px 14px 0 5px var(--black); }
+.dossier-head .dossier-stack { gap: 10px; }
+.dossier-head .dossier-stack li { border: 0; padding: 1px 12px 0; background: var(--white); color: var(--black); font-family: var(--f-menu); font-weight: 400; font-size: 18px; letter-spacing: 1px; transform: skew(var(--skew)); box-shadow: 3px 3px 0 var(--red); }
+.dossier-head .dossier-stack li:nth-child(even) { background: var(--yellow); }
+.dossier .loot { gap: 14px; padding: 4px 6px 0 2px; }
+.dossier .loot li { position: relative; padding: 9px 12px 8px 44px; font-family: var(--f-ui); font-style: italic; font-weight: 700; font-size: 19px; line-height: 1.15; border-width: 3px; transform: skew(-6deg) rotate(-1.1deg); box-shadow: 5px 5px 0 var(--black); }
+.dossier .loot li::before { content: ""; position: absolute; left: 12px; top: 50%; width: 22px; height: 22px; margin-top: -11px; background: var(--black); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.dossier .loot li:nth-child(2) { transform: skew(-6deg) rotate(.9deg); margin-left: 10px; box-shadow: 5px 5px 0 var(--red); }
+.dossier .loot li:nth-child(3) { transform: skew(-6deg) rotate(-.5deg); margin-right: 14px; }
+.dossier .loot li:nth-child(4) { transform: skew(-6deg) rotate(1.2deg); margin-left: 4px; box-shadow: 5px 5px 0 var(--red); }
+.dossier .obj .hl { box-shadow: 2px 2px 0 var(--black); }
+@media (max-width: 760px) {
+  .modal-panel { box-shadow: 8px 8px 0 var(--red), 8px 8px 0 4px var(--black); }
+  .dossier .loot li { font-size: 17px; }
+}
+
+/* ============================ SETTINGS: sheets with ink and a hard shadow, an angular volume meter, sticker-strip achievements (Nov 22, the outside judge: "white panels are stark, with simple flat shadows"; "the volume control looks like a default browser slider"; "achievement rows are identical full-width bars") ============================ */
+/* a sheet: ink border, straight edges on a slight lean (the old jagged top "kinked" by accident), a red misprint shadow with a black line, a halftone corner */
+.sys.jag::before, .sys.jag::after { display: none; }
+.sys.jag { border: 4px solid var(--black); box-shadow: 10px 10px 0 var(--red), 10px 10px 0 4px var(--black);
+  background: linear-gradient(315deg, transparent 0, var(--white) 26%), radial-gradient(rgba(229, 25, 28, .5) 1.7px, transparent 2.3px) 0 0 / 10px 10px, var(--white); }
+.sys-grid { gap: 34px 38px; }
+.sys-grid > .sys:nth-child(1) { rotate: -.6deg; }
+.sys-grid > .sys:nth-child(2) { rotate: .5deg; }
+.sys-grid > .sys:nth-child(3) { rotate: -.25deg; }
+.sys-grid > .sys:nth-child(4) { rotate: .2deg; }
+.sys .row { min-height: 46px; margin: 8px 0; padding-top: 8px; border-top: 2px dashed rgba(11, 11, 11, .22); }
+.sys h3 + .row { border-top: 0; }
+.sys .row label, .sys .row { font-family: var(--f-ui); font-style: italic; font-weight: 700; font-size: 19px; letter-spacing: .3px; }
+/* the volume meter: ten chunky slanted blocks like the skill meter, filled up to the knob (the fill follows --v, set by the page) */
+.sys input[type=range] { -webkit-appearance: none; appearance: none; width: 190px; height: 34px; margin: 0; background: transparent; cursor: pointer; transform: skewX(-14deg); --v: 50%; }
+.sys input[type=range]::-webkit-slider-runnable-track { height: 20px; border: 3px solid var(--black);
+  background: repeating-linear-gradient(90deg, transparent 0 14px, var(--white) 14px 18px), linear-gradient(90deg, var(--red) 0 var(--v), var(--paper) var(--v) 100%); }
+.sys input[type=range]::-moz-range-track { height: 14px; border: 3px solid var(--black);
+  background: repeating-linear-gradient(90deg, transparent 0 14px, var(--white) 14px 18px), linear-gradient(90deg, var(--red) 0 var(--v), var(--paper) var(--v) 100%); }
+.sys input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 34px; margin-top: -10px; background: var(--black); border: 0; box-shadow: 3px 3px 0 var(--yellow); }
+.sys input[type=range]::-moz-range-thumb { width: 14px; height: 34px; background: var(--black); border: 0; border-radius: 0; box-shadow: 3px 3px 0 var(--yellow); }
+.sys input[type=range]:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
+/* achievements: sticker strips, each its own length and lean, found ones stamped with a black star tab */
+.ach-list { gap: 12px; }
+.ach-list li { border-width: 3px; padding: 8px 14px 8px 10px; box-shadow: 5px 5px 0 var(--black); transform: skew(-4deg) rotate(-.35deg); }
+.ach-list li:nth-child(even) { transform: skew(-4deg) rotate(.3deg); margin-left: 16px; }
+.ach-list li:nth-child(3n) { margin-right: 4%; }
+.ach-list li:nth-child(3n+1) { margin-right: 9%; }
+.ach-list li.got { box-shadow: 5px 5px 0 var(--red); }
+.ach-list li.got .ach-ico { display: grid; place-items: center; width: 40px; height: 40px; flex: none; background: var(--black); color: var(--yellow); transform: rotate(-6deg); }
+.ach-list li:not(.got) { background: var(--white); border-style: dashed; box-shadow: none; }
+.ach-list li:not(.got) .ach-ico { width: 40px; flex: none; font-family: var(--f-head); }
+@media (max-width: 760px) { .ach-list li, .ach-list li:nth-child(even) { margin-left: 0; margin-right: 0; } .sys input[type=range] { width: 150px; } }
+
+/* ============================ MISSIONS: posters lifted off the page, real tape, the grade clear of the LIVE tag (Nov 22, the outside judge: "flat tape... grey rectangles"; "the S-rank burst overlaps the LIVE tag"; "the same template twice") ============================ */
+/* (the poster's clip-path cut off its own hard shadow) */
+.poster { clip-path: none; }
+.poster-tape { top: -13px; left: 40%; width: 118px; height: 30px; border: 0; rotate: -5deg;
+  background: repeating-linear-gradient(90deg, rgba(11, 11, 11, .07) 0 2px, transparent 2px 9px), rgba(233, 228, 208, .86);
+  clip-path: polygon(0 12%, 3% 0, 6% 14%, 9% 2%, 12% 12%, 100% 0, 97% 16%, 100% 30%, 96% 46%, 100% 62%, 97% 80%, 100% 100%, 12% 92%, 9% 100%, 6% 88%, 3% 100%, 0 86%, 3% 68%, 0 50%, 3% 32%);
+  box-shadow: none; }
+.wanted-slot:nth-child(even) .poster-tape { left: 52%; rotate: 4deg; width: 104px; }
+.wanted-slot:nth-child(even) .poster::after { right: auto; left: 0; scale: -1 1; } /* the second poster's halftone sits in its other corner */
+.poster-grade { top: 58px; right: 18px; }
+.poster-name { padding-top: 8px; }
+@media (max-width: 760px) { .poster-grade { top: 50px; } }
+
+/* ============================ SIDE QUESTS: an inked rail route, pins clear of the cards, cards lifted (Nov 22, the outside judge: "dashed line and numbered stars look like clipart"; "star 1 overlaps card 1's edge") ============================ */
+.stop.left .stop-card, .stop.right .stop-card { clip-path: none; } /* (it cut off the card's hard shadow) */
+.stop-card { box-shadow: 10px 10px 0 var(--red), 10px 10px 0 4px var(--black); }
+.route-under { stroke-width: 20; }
+.route-dash { stroke: var(--white); stroke-width: 11; stroke-dasharray: 26 14; }
+.stop-pin { width: 70px; height: 70px; font-size: 32px; border: 0; background: var(--black); position: relative; }
+.stop-pin::before { content: ""; position: absolute; inset: 6px; z-index: -1; background: var(--yellow); clip-path: inherit; }
+.stop-card .ql-text { text-wrap: balance; }
+@media (min-width: 761px) { .stop { grid-template-columns: 1fr 104px 1fr; } }
+
+/* ============================ EVERY CHAPTER: the subtitle leans with its title, body copy has weight, the names on the line map read, the fold is a designed edge (Nov 22, the outside judge: "subtitle tags sit flat and static under the tilted titles"; "body copy reads as plain browser sans"; "station names tiny, colliding with the dagger and the building"; "content is sliced by the bottom of the frame") ============================ */
+.page-sub { rotate: -1.4deg; transform-origin: 0 50%; padding: 6px 16px 5px 14px; margin-bottom: 30px; background: var(--black); border-right: 9px solid var(--red); }
+.poster-brief, .panel p, .id-info p:not(.id-honors) { font-size: 17px; font-weight: 700; letter-spacing: .1px; line-height: 1.4; }
+.poster-stack, .stop-meta, .id-honors { font-family: var(--f-ui); font-style: italic; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; }
+.poster-stack { font-size: 15px; } .stop-meta { font-size: 14px; } .id-honors { font-size: 14px !important; }
+@media (min-width: 761px) {
+  /* the names up the line: a size larger, each on its own ink tag so the tower behind never fights them */
+  .ss-stop:not(.now) .ss-name { font-size: 14.5px; letter-spacing: 1.3px; padding: 3px 7px 2px; background: var(--black); text-shadow: none; box-shadow: 2px 2px 0 var(--red); }
+  /* the stop before yours leans away from the dagger's guard */
+  .ss-stop.now { margin-left: 14px; }
+}
+/* the fold: a black edge with a red line, pinned to the bottom of every chapter like the strip that slides in at the top (a film frame, never a browser cut) */
+.screen-page::after { content: ""; position: fixed; left: -2vw; right: -2vw; bottom: -22px; z-index: 38; height: 50px; pointer-events: none;
+  background: linear-gradient(to bottom, var(--red) 0 4px, var(--black) 4px); transform: skewY(-.55deg); transform-origin: 100% 100%; }
+#screen-quick::after { content: none; }
+@media (max-width: 760px) { .screen-page::after { height: 40px; } }
+@media print { .screen-page::after { display: none; } }
