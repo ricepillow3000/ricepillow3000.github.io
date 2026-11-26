@@ -1,20 +1,15 @@
 # A ready claude/ PR squash-merges itself once its gate and every other check pass.
+# No polling: merge looks once after the gate and again each time another workflow finishes.
 name: Agent auto-merge
 
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
 
-permissions:
-  actions: write
-  contents: write
-  pull-requests: write
-  checks: read
-  "statuses": read  # quoted bc the action-pin tests regex would read this key as a step lol
-
-concurrency:
-  group: agent-automerge-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+permissions: {}
 
 env:
   GATE: ""
@@ -22,18 +17,25 @@ env:
   AFTER_MERGE: ""
 
 jobs:
-  automerge:
+  gate:
+    name: automerge gate
     if: >-
+      github.event_name == 'pull_request' &&
       startsWith(github.head_ref, 'claude/') &&
       !github.event.pull_request.draft &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pull-requests: read
+    concurrency:
+      group: agent-automerge-gate-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       PR: ${{ github.event.pull_request.number }}
-      SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
@@ -51,25 +53,78 @@ jobs:
             exit 1
           fi
 
-      - name: Wait for every other check
+  merge:
+    name: automerge merge
+    needs: gate
+    # never checks out code: on workflow_run it holds write access next to PR-controlled refs
+    if: >-
+      !cancelled() && (
+      (github.event_name == 'pull_request' && needs.gate.result == 'success') ||
+      (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'claude/')))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+      "statuses": read  # quoted bc the action-pin tests regex would read this key as a step lol
+    concurrency:
+      group: agent-automerge-merge-${{ github.head_ref || github.event.workflow_run.head_branch }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Find the PR
+        id: pr
+        env:
+          EV_PR: ${{ github.event.pull_request.number }}
+          EV_SHA: ${{ github.event.pull_request.head.sha }}
+          EV_BASE: ${{ github.event.pull_request.base.ref }}
+          OWNER: ${{ github.repository_owner }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          sleep 30  # first look at 60 s so slow-to-queue workflows show up first
-          for _ in $(seq 120); do
-            sleep 30
-            # two separate calls so a failed api call kills the step instead of looking like "nothing pending" lol
-            runs=$(gh api --paginate "repos/$GH_REPO/commits/$SHA/check-runs?per_page=100" \
-                     --jq '.check_runs[] | select(.name != "automerge") | "\(.status) \(.conclusion) \(.name)"')
-            stats=$(gh api "repos/$GH_REPO/commits/$SHA/status" --jq '.statuses[] | "\(.state) \(.context)"')
-            all=$(printf '%s\n%s' "$runs" "$stats")
-            bad=$(grep -E '^(completed (failure|cancelled|timed_out|action_required|startup_failure|stale)|failure|error) ' <<<"$all" || true)
-            if [ -n "$bad" ]; then echo "::error::failed: $bad"; exit 1; fi
-            grep -qvE '^(completed|success) |^$' <<<"$all" || exit 0
-          done
-          echo "::error::checks still running after 60 min"
-          exit 1
+          if [ -n "$EV_PR" ]; then
+            printf 'pr=%s\nsha=%s\nbase=%s\n' "$EV_PR" "$EV_SHA" "$EV_BASE" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          found=$(gh pr list --repo "$GH_REPO" --head "$RUN_BRANCH" --state open \
+                    --json number,isDraft,headRefName,headRepositoryOwner,headRefOid,baseRefName |
+                  jq -r --arg o "$OWNER" --arg s "$RUN_SHA" '.[] | select((.headRefName | startswith("claude/"))
+                    and (.isDraft | not) and .headRepositoryOwner.login == $o and .headRefOid == $s)
+                    | "pr=\(.number)\nsha=\(.headRefOid)\nbase=\(.baseRefName)"' | head -3)
+          if [ -z "$found" ]; then echo "::notice::no ready claude/ PR at this commit"; exit 0; fi
+          echo "$found" >> "$GITHUB_OUTPUT"
+
+      - name: Read every other check once
+        id: checks
+        if: steps.pr.outputs.pr != ''
+        env:
+          SHA: ${{ steps.pr.outputs.sha }}
+        run: |
+          # two separate calls so a failed api call kills the step instead of looking like "nothing pending" lol
+          runs=$(gh api --paginate "repos/$GH_REPO/commits/$SHA/check-runs?per_page=100" \
+                   --jq '.check_runs[] | select(.name != "automerge merge") | "\(.status) \(.conclusion) \(.name)"')
+          stats=$(gh api "repos/$GH_REPO/commits/$SHA/status" --jq '.statuses[] | "\(.state) \(.context)"')
+          all=$(printf '%s\n%s' "$runs" "$stats")
+          bad=$(grep -E '^(completed (failure|cancelled|timed_out|action_required|startup_failure|stale)|failure|error) ' <<<"$all" || true)
+          if [ -n "$bad" ]; then echo "::error::failed: $bad"; exit 1; fi
+          pending=$(grep -Ev '^(completed|success) |^$' <<<"$all" || true)
+          # the gate's run shows up a beat after the PR opens, so no gate yet means wait, not merge
+          grep -qx 'completed success automerge gate' <<<"$all" || pending=$(printf '%s\n' "$pending" "automerge gate" | grep .)
+          if [ -n "$pending" ]; then
+            echo "::notice::waiting for $(paste -sd, <<<"$pending")"
+            exit 0
+          fi
+          echo "green=true" >> "$GITHUB_OUTPUT"
 
       - name: Squash-merge
         id: merge
+        if: steps.checks.outputs.green == 'true'
+        env:
+          PR: ${{ steps.pr.outputs.pr }}
+          SHA: ${{ steps.pr.outputs.sha }}
         run: |
           if [ "$(gh pr view "$PR" --json isDraft -q .isDraft)" != false ]; then
             echo "::notice::back to draft, not merging"
@@ -84,7 +139,7 @@ jobs:
       - name: Run the push workflows the merge skipped
         if: steps.merge.outputs.merged == 'true' && env.AFTER_MERGE != ''
         env:
-          BASE: ${{ github.event.pull_request.base.ref }}
+          BASE: ${{ steps.pr.outputs.base }}
         run: |
           for w in $AFTER_MERGE; do
             gh workflow run "$w" --ref "$BASE"
